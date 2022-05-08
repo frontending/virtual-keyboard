@@ -72,6 +72,10 @@ main {
     background-color: #c8dce4;
 }
 
+.btn-pressed {
+    transform: scale(0.9);
+}
+
 .btn-wide1 {
     width: 15%;
     max-width: unset;

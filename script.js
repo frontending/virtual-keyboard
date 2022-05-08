@@ -1,4 +1,4 @@
-let [bodyKeyboard, words, btnLetterList] = [
+let [bodyKeyboard, words, btnLetterList, langCurrent] = [
     document.querySelector('.body'),
     [
         ['ё', 'Ё', '`', '~', 'ё', 'Ё', '`', '~'],
@@ -121,6 +121,7 @@ let [bodyKeyboard, words, btnLetterList] = [
         ['Ctrl', 'Ctrl', 'Ctrl', 'Ctrl', 'Ctrl', 'Ctrl', 'Ctrl', 'Ctrl'],
     ],
     '0,1,2,3,4,5,6,7,8,9,10,11,12,13,16,17,18,19,20,21,22,23,24,25,26,27,30,31,32,33,34,35,36,37,38,39,40,43,44,45,46,47,48,49,50,51,52,53,58,60,61,62',
+    localStorage.getItem('lang') || 'rus',
 ]
 
 function createElement(type, parentEl, assign, flag, ...classes) {
@@ -164,8 +165,27 @@ for (let i = 0; i < btn.length; i++) {
         btn[i].classList.add('btn-wide3')
     }
 }
-for (let i = 0; i < btn.length; i++) {
-    btn[i].textContent = words[i][0]
+
+function changeLang(lang) {
+    for (let i = 0; i < btn.length; i++) {
+        if (lang === 'eng') {
+            btn[i].textContent = words[i][2]
+        } else {
+            btn[i].textContent = words[i][0]
+        }
+    }
+}
+
+changeLang(langCurrent)
+
+function changeLocalStorage() {
+    if (langCurrent === 'rus') {
+        localStorage.setItem('lang', 'eng')
+        langCurrent = 'eng'
+    } else {
+        localStorage.setItem('lang', 'rus')
+        langCurrent = 'rus'
+    }
 }
 
 for (let i = 0; i < btn.length; i++) {
@@ -174,6 +194,9 @@ for (let i = 0; i < btn.length; i++) {
         if (btnLetterList.split(',').includes(i.toString())) {
             textareaKeyboard.focus()
             textareaKeyboard.value += e.target.textContent
+        } else if (i === 56) {
+            changeLocalStorage()
+            changeLang(langCurrent)
         }
     })
 }

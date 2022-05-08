@@ -39,7 +39,7 @@ main {
     opacity: 0.95;
 }
 
-.keyboard {
+.keyboard-wrapper {
     margin-top: 2vw;
     padding: 1vw;
     display: flex;
@@ -95,6 +95,9 @@ main {
 }
 
 .info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: 0.5vw 0.5vw 0 0.5vw;
     width: 30%;
     height: 60px;

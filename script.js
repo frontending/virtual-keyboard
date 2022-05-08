@@ -1,4 +1,12 @@
-let [bodyKeyboard, words, btnLetterList, langCurrent] = [
+let [
+    bodyKeyboard,
+    words,
+    btnLetterList,
+    langCurrent,
+    audio,
+    audioStatus,
+    keyboardStatus,
+] = [
     document.querySelector('.body'),
     [
         ['ё', 'Ё', '`', '~', 'ё', 'Ё', '`', '~'],
@@ -68,6 +76,9 @@ let [bodyKeyboard, words, btnLetterList, langCurrent] = [
     ],
     '0,1,2,3,4,5,6,7,8,9,10,11,12,13,16,17,18,19,20,21,22,23,24,25,26,27,30,31,32,33,34,35,36,37,38,39,40,43,44,45,46,47,48,49,50,51,52,53,58,60,61,62',
     localStorage.getItem('lang') || 'rus',
+    new Audio('assets/click.mp3'),
+    true,
+    true,
 ]
 
 function createElement(type, parentEl, assign, flag, ...classes) {
@@ -136,6 +147,9 @@ function changeLocalStorage() {
 
 for (let i = 0; i < btn.length; i++) {
     btn[i].addEventListener('mousedown', function (e) {
+        if (audioStatus) {
+            audio.play()
+        }
         e.target.classList.add('btn-pressed')
         if (btnLetterList.split(',').includes(i.toString())) {
             textareaKeyboard.focus()
@@ -158,3 +172,40 @@ for (let i = 0; i < btn.length; i++) {
         e.target.classList.remove('btn-pressed')
     })
 }
+
+info[0].addEventListener('click', function () {
+    if (audioStatus) {
+        audio.play()
+    }
+    if (keyboardStatus) {
+        keyboardWrapper.style.visibility = 'hidden'
+        keyboardStatus = false
+        info[0].textContent = 'ПОКАЗАТЬ'
+    } else {
+        keyboardWrapper.style.visibility = 'visible'
+        keyboardStatus = true
+        info[0].textContent = 'СКРЫТЬ'
+    }
+})
+
+info[1].addEventListener('click', function () {
+    if (audioStatus) {
+        audioStatus = false
+        info[1].textContent = 'ЗВУК OFF'
+    } else {
+        audioStatus = true
+        info[1].textContent = 'ЗВУК ON'
+    }
+    if (audioStatus) {
+        audio.play()
+    }
+})
+
+info[2].addEventListener('click', function () {
+    if (audioStatus) {
+        audio.play()
+    }
+    alert(
+        'Разработано для Windows, переключение языка кнопкой ru/en на клавиатуре. Frontending, для RSSchool, 2022'
+    )
+})

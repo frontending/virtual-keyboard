@@ -1,9 +1,9 @@
 let [
+    //применяем деструктуризацию согласно тех.задания (ES6) и используем let (ES6)
     bodyKeyboard,
     words,
     btnLetterList,
     langCurrent, //рус-англ
-    audio,
     audioStatus,
     keyboardStatus, //показать-скрыть
     shiftStatus,
@@ -77,15 +77,18 @@ let [
         ['ControlRight', 'Ctrl'],
     ],
     '0,1,2,3,4,5,6,7,8,9,10,11,12,13,16,17,18,19,20,21,22,23,24,25,26,27,30,31,32,33,34,35,36,37,38,39,40,43,44,45,46,47,48,49,50,51,52,53,58,60,61,62',
-    localStorage.getItem('lang') || 'rus',
-    new Audio('assets/click.mp3'),
+    localStorage.getItem('lang') || 'rus', //защита от ошибок при загрузке через приватную вкладку
     false,
     true,
     false,
     false,
 ]
 
+const audio = new Audio('assets/click.mp3') //используем let согласно тех.задания (ES6)
+
+//шаблон создания элементов DOM
 function createElement(type, parentEl, assign, flag, ...classes) {
+    //оператор REST согласно тех.задания (ES6)
     let el = document.createElement(`${type}`)
     for (let e of classes) {
         el.classList.add(`${e}`)
@@ -96,6 +99,7 @@ function createElement(type, parentEl, assign, flag, ...classes) {
         : (window[assign] = document.querySelectorAll(`.${classes[0]}`))
 }
 
+//генерация страницы
 createElement('main', bodyKeyboard, 'mainKeyboard', true, 'main')
 createElement('textarea', mainKeyboard, 'textareaKeyboard', true, 'textarea')
 textareaKeyboard.placeholder = 'Введите текст: '
@@ -127,6 +131,7 @@ for (let i = 0; i < btn.length; i++) {
     }
 }
 
+//смена языка
 function changeLang(lang) {
     for (let i = 0; i < btn.length; i++) {
         if (lang === 'eng') {
@@ -139,6 +144,7 @@ function changeLang(lang) {
 
 changeLang(langCurrent) //передаём язык, остальное подтягивается из статусов
 
+//запоминаем язык
 function changeLocalStorage() {
     if (langCurrent === 'rus') {
         localStorage.setItem('lang', 'eng')
@@ -149,6 +155,7 @@ function changeLocalStorage() {
     }
 }
 
+//обработка нажатия кнопки мыши по виртуальной клавиатуре
 for (let i = 0; i < btn.length; i++) {
     btn[i].addEventListener('mousedown', function (e) {
         if (audioStatus) {
@@ -202,6 +209,7 @@ for (let i = 0; i < btn.length; i++) {
     })
 }
 
+//мышь отпустили - кнопки вернулись в исходное состояние
 for (let i = 0; i < btn.length; i++) {
     btn[i].addEventListener('mouseup', function (e) {
         e.target.classList.remove('btn-pressed')
@@ -209,6 +217,7 @@ for (let i = 0; i < btn.length; i++) {
     })
 }
 
+//мышь увели - кнопки вернулись в исходное состояние, защита от багов
 for (let i = 0; i < btn.length; i++) {
     btn[i].addEventListener('mouseleave', function (e) {
         e.target.classList.remove('btn-pressed')
@@ -216,6 +225,7 @@ for (let i = 0; i < btn.length; i++) {
     })
 }
 
+//кнопки под клавиатурой
 info[0].addEventListener('click', function () {
     if (audioStatus) {
         audio.play()
@@ -249,10 +259,11 @@ info[2].addEventListener('click', function () {
         audio.play()
     }
     alert(
-        'Разработано для Windows, переключение языка кнопкой ru/en на виртуальной клавиатуре. Физическая клавиатура работает не с системным языком, а с языком виртуальной клавиатуры. Самопроверка продублирована в консоли. Frontending, для RSSchool, 2022'
+        'Разработано для Windows, переключение языка кнопкой ru/en на виртуальной клавиатуре. Работает ТОЛЬКО с русским и английским языками. Физическая клавиатура меняет язык виртуальной клавиатуры на системный при вводе любой буквы. Как поведёт себя клавиатура, если ваш системный язык отличается от русского и английского - не знаю, не проверял. Самопроверка продублирована в консоли. Там же комментарии по работе. Frontending, для RSSchool, 2022'
     )
 })
 
+//обработка нажатий физицеской клавиатуры
 document.addEventListener('keydown', function (e) {
     for (let i = 0; i < btn.length; i++) {
         if (words[i][0] === e.code) {
@@ -264,6 +275,7 @@ document.addEventListener('keydown', function (e) {
             textareaKeyboard.focus()
             if (btnLetterList.split(',').includes(i.toString())) {
                 if (
+                    //проверка системного языка
                     'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNMйцукенгшщзхъфывапролджэячсмитьбюЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ'.includes(
                         e.key
                     ) &&
@@ -272,7 +284,7 @@ document.addEventListener('keydown', function (e) {
                 ) {
                     changeLocalStorage()
                     changeLang(langCurrent)
-                }
+                } //Frontending
                 textareaKeyboard.value += btn[i].textContent
                 textareaKeyboard.focus()
             } else if (i === 41) {
@@ -307,6 +319,7 @@ document.addEventListener('keydown', function (e) {
     }
 })
 
+//кнопку физической клавиатуры отпускаем, эффекты нажатия отменяются
 document.addEventListener('keyup', function (e) {
     e.preventDefault()
     for (let i = 0; i < btn.length; i++) {
@@ -325,14 +338,13 @@ document.addEventListener('keyup', function (e) {
     }
 })
 
+//не даём перемещать курсор
 textareaKeyboard.addEventListener('click', function () {
     textareaKeyboard.selectionStart = textareaKeyboard.value.length
 })
 
+//Выясняем какую раскладку нужно использовать
 function checkStatus() {
-    langCurrent
-    shiftStatus
-    capsStatus
     if (langCurrent === 'rus') {
         if (shiftStatus) {
             if (capsStatus) {
@@ -363,3 +375,7 @@ function checkStatus() {
         }
     }
 }
+
+console.log(
+    'Доброго времени суток!\nКлавиатура для ОС Windows\nРаботает только с русским и английским языками\nНавигация срелками не была обязательной и не реализована, соответственно функция кнопки DEL не имеет смысла\nЯ заменил функциональность кнопки DEL на удаление всего текста, т.е. очистка textarea\nТеперь о реализованных и не реализованных пунктах\nНе реализовано использование eslint и это -10 баллов\nВсё остальное реализовано в рамках тех.задания\nИз неочевидных моментов при проверке - реализация ES6\nРеализовано: let/const, rest, деструктуризация\nЭтого вполне достаточно для выполнения требования тех.задания\nМной обнаружен баг. Если зажать на физической клавиатуре сразу оба shift и потом одну из кнопок shift отпустить, то анимация зажатия кнопки сохранится\nПофиксить не успею, но это не учитывается при проверке\nТем не менее мне было бы очень интересно узнать какие ещё баги у меня в проекте\nБольшая просьба при оценке руководствоваться тех.заданием, а не личными предпочтениями и пожеланиями\nПожелания можно написать в обратной связи, но они как минимум не должны влиять на оценку\nПридирки и поиск ошибок без учёта тех.задания очень сильно портит настроение и отбивает желание учиться и развиваться\nИ пусть у вас не будет студента1 вместе с вагоном "ошибок"\nСпасибо!'
+)

@@ -9,7 +9,7 @@ let [
 ] = [
     document.querySelector('.body'),
     [
-        ['Backquote', 'ё', 'Ё', '`', '~', 'ё', 'Ё', '`', '~'],
+        ['Backquote', 'ё', 'Ё', '`', '~', 'ё', 'Ё', '`', '~'], //0
         ['Digit1', '1', '!', '1', '!', '1', '!', '1', '!'],
         ['Digit2', '2', '"', '2', '@', '2', '"', '2', '@'],
         ['Digit3', '3', '№', '3', '#', '3', '№', '3', '#'],
@@ -19,7 +19,7 @@ let [
         ['Digit7', '7', '?', '7', '&', '7', '?', '7', '&'],
         ['Digit8', '8', '*', '8', '*', '8', '*', '8', '*'],
         ['Digit9', '9', '(', '9', '(', '9', '(', '9', '('],
-        ['Digit0', '0', ')', '0', ')', '0', ')', '0', ')'],
+        ['Digit0', '0', ')', '0', ')', '0', ')', '0', ')'], //10
         ['Minus', '-', '_', '-', '_', '-', '_', '-', '_'],
         ['Equal', '=', '+', '=', '+', '=', '+', '=', '+'],
         ['Backslash', '\\', '/', '\\', '|', '\\', '/', '\\', '|'],
@@ -29,7 +29,7 @@ let [
         ['KeyW', 'ц', 'Ц', 'w', 'W', 'Ц', 'ц', 'W', 'w'],
         ['KeyE', 'у', 'У', 'e', 'E', 'У', 'у', 'E', 'e'],
         ['KeyR', 'к', 'К', 'r', 'R', 'К', 'к', 'R', 'r'],
-        ['KeyT', 'е', 'Е', 't', 'T', 'Е', 'е', 'T', 't'],
+        ['KeyT', 'е', 'Е', 't', 'T', 'Е', 'е', 'T', 't'], //20
         ['KeyY', 'н', 'Н', 'y', 'Y', 'Н', 'н', 'Y', 'y'],
         ['KeyU', 'г', 'Г', 'u', 'U', 'Г', 'г', 'U', 'u'],
         ['KeyI', 'ш', 'Ш', 'i', 'I', 'Ш', 'ш', 'I', 'i'],
@@ -39,7 +39,7 @@ let [
         ['BracketRight', 'ъ', 'Ъ', ']', '}', 'Ъ', 'ъ', ']', '}'],
         ['Delete', 'DEL'],
         ['CapsLock', 'Caps Lock'],
-        ['KeyA', 'ф', 'Ф', 'a', 'A', 'Ф', 'ф', 'A', 'a'],
+        ['KeyA', 'ф', 'Ф', 'a', 'A', 'Ф', 'ф', 'A', 'a'], //30
         ['KeyS', 'ы', 'Ы', 's', 'S', 'Ы', 'ы', 'S', 's'],
         ['KeyD', 'в', 'В', 'd', 'D', 'В', 'в', 'D', 'd'],
         ['KeyF', 'а', 'А', 'f', 'F', 'А', 'а', 'F', 'f'],
@@ -49,7 +49,7 @@ let [
         ['KeyK', 'л', 'Л', 'k', 'K', 'Л', 'л', 'K', 'k'],
         ['KeyL', 'д', 'Д', 'l', 'L', 'Д', 'д', 'L', 'l'],
         ['Semicolon', 'ж', 'Ж', ';', ':', 'Ж', 'ж', ';', ':'],
-        ['Quote', 'э', 'Э', "'", '"', 'Э', 'э', "'", '"'],
+        ['Quote', 'э', 'Э', "'", '"', 'Э', 'э', "'", '"'], //40
         ['Enter', 'Enter'],
         ['ShiftLeft', 'Shift'],
         ['KeyZ', 'я', 'Я', 'z', 'Z', 'Я', 'я', 'Z', 'z'],
@@ -59,7 +59,7 @@ let [
         ['KeyB', 'и', 'И', 'b', 'B', 'И', 'и', 'B', 'b'],
         ['KeyN', 'т', 'Т', 'n', 'N', 'Т', 'т', 'N', 'n'],
         ['KeyM', 'ь', 'Ь', 'm', 'M', 'Ь', 'ь', 'M', 'm'],
-        ['Comma', 'б', 'Б', ',', '<', 'Б', 'б', ',', '<'],
+        ['Comma', 'б', 'Б', ',', '<', 'Б', 'б', ',', '<'], //50
         ['Period', 'ю', 'Ю', '.', '>', 'Ю', 'ю', '.', '>'],
         ['Slash', '.', ',', '/', '?', '.', ',', '/', '?'],
         ['ArrowUp', '↑'],
@@ -69,7 +69,7 @@ let [
         ['AltLeft', 'Alt'],
         ['Space', ' '],
         ['AltRight', 'Alt'],
-        ['ArrowLeft', '←'],
+        ['ArrowLeft', '←'], //60
         ['ArrowDown', '↓'],
         ['ArrowRight', '→'],
         ['ControlRight', 'Ctrl'],
@@ -151,12 +151,25 @@ for (let i = 0; i < btn.length; i++) {
             audio.play()
         }
         e.target.classList.add('btn-pressed')
+        textareaKeyboard.focus()
         if (btnLetterList.split(',').includes(i.toString())) {
-            textareaKeyboard.focus()
             textareaKeyboard.value += e.target.textContent
         } else if (i === 56) {
             changeLocalStorage()
             changeLang(langCurrent)
+        } else if (i === 41) {
+            textareaKeyboard.value += '\n'
+        } else if (i === 14) {
+            if (textareaKeyboard.value !== '') {
+                textareaKeyboard.value = textareaKeyboard.value.slice(
+                    0,
+                    textareaKeyboard.value.length - 1
+                )
+            }
+        } else if (i === 15) {
+            textareaKeyboard.value += '\t'
+        } else if (i === 28) {
+            textareaKeyboard.value = ''
         }
     })
 }
@@ -220,8 +233,8 @@ document.addEventListener('keydown', function (e) {
             }
             e.preventDefault()
             btn[i].classList.add('btn-pressed')
+            textareaKeyboard.focus()
             if (btnLetterList.split(',').includes(i.toString())) {
-                textareaKeyboard.focus()
                 if (
                     e.key.toLowerCase() !== btn[i].textContent &&
                     e.key !== 'ArrowUp' &&
@@ -238,6 +251,19 @@ document.addEventListener('keydown', function (e) {
                     textareaKeyboard.value += words[i][3] || words[i][1]
                 }
                 textareaKeyboard.focus()
+            } else if (i === 41) {
+                textareaKeyboard.value += '\n'
+            } else if (i === 14) {
+                if (textareaKeyboard.value !== '') {
+                    textareaKeyboard.value = textareaKeyboard.value.slice(
+                        0,
+                        textareaKeyboard.value.length - 1
+                    )
+                }
+            } else if (i === 15) {
+                textareaKeyboard.value += '\t'
+            } else if (i === 28) {
+                textareaKeyboard.value = ''
             }
         }
     }
@@ -250,4 +276,8 @@ document.addEventListener('keyup', function (e) {
             btn[i].classList.remove('btn-pressed')
         }
     }
+})
+
+textareaKeyboard.addEventListener('click', function () {
+    textareaKeyboard.selectionStart = textareaKeyboard.value.length
 })

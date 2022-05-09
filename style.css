@@ -77,6 +77,11 @@ main {
     background-color: #c8dce4;
 }
 
+.btn-active {
+    border: 2px solid #392cb3;
+    box-shadow: 1px 1px 3px 2px #392cb3;
+}
+
 .btn-wide1 {
     width: 15%;
     max-width: unset;

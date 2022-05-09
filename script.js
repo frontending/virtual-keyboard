@@ -2,10 +2,12 @@ let [
     bodyKeyboard,
     words,
     btnLetterList,
-    langCurrent,
+    langCurrent, //рус-англ
     audio,
     audioStatus,
-    keyboardStatus,
+    keyboardStatus, //показать-скрыть
+    shiftStatus,
+    capsStatus,
 ] = [
     document.querySelector('.body'),
     [
@@ -77,8 +79,10 @@ let [
     '0,1,2,3,4,5,6,7,8,9,10,11,12,13,16,17,18,19,20,21,22,23,24,25,26,27,30,31,32,33,34,35,36,37,38,39,40,43,44,45,46,47,48,49,50,51,52,53,58,60,61,62',
     localStorage.getItem('lang') || 'rus',
     new Audio('assets/click.mp3'),
+    false,
     true,
-    true,
+    false,
+    false,
 ]
 
 function createElement(type, parentEl, assign, flag, ...classes) {
@@ -101,7 +105,7 @@ for (let i = 0; i < 3; i++) {
     createElement('div', information, 'info', false, 'info')
 }
 info[0].textContent = 'СКРЫТЬ'
-info[1].textContent = 'ЗВУК ON'
+info[1].textContent = 'ЗВУК OFF'
 info[2].textContent = 'ИНФО'
 createElement('div', keyboardWrapper, 'keyboardBtn', true, 'keyboard-btn')
 for (let i = 0; i < 5; i++) {
@@ -126,14 +130,14 @@ for (let i = 0; i < btn.length; i++) {
 function changeLang(lang) {
     for (let i = 0; i < btn.length; i++) {
         if (lang === 'eng') {
-            btn[i].textContent = words[i][3] || words[i][1]
+            btn[i].textContent = words[i][checkStatus()] || words[i][1]
         } else {
-            btn[i].textContent = words[i][1]
+            btn[i].textContent = words[i][checkStatus()] || words[i][1]
         }
     }
 }
 
-changeLang(langCurrent)
+changeLang(langCurrent) //передаём язык, остальное подтягивается из статусов
 
 function changeLocalStorage() {
     if (langCurrent === 'rus') {
@@ -154,6 +158,10 @@ for (let i = 0; i < btn.length; i++) {
         textareaKeyboard.focus()
         if (btnLetterList.split(',').includes(i.toString())) {
             textareaKeyboard.value += e.target.textContent
+            shiftStatus = false
+            btn[54].classList.remove('btn-active')
+            btn[42].classList.remove('btn-active')
+            changeLang(langCurrent)
         } else if (i === 56) {
             changeLocalStorage()
             changeLang(langCurrent)
@@ -170,6 +178,26 @@ for (let i = 0; i < btn.length; i++) {
             textareaKeyboard.value += '\t'
         } else if (i === 28) {
             textareaKeyboard.value = ''
+        } else if (i === 29) {
+            if (capsStatus) {
+                capsStatus = false
+                btn[29].classList.remove('btn-active')
+            } else {
+                capsStatus = true
+                btn[29].classList.add('btn-active')
+            }
+            changeLang(langCurrent)
+        } else if (i === 54 || i === 42) {
+            if (shiftStatus) {
+                shiftStatus = false
+                btn[54].classList.remove('btn-active')
+                btn[42].classList.remove('btn-active')
+            } else {
+                shiftStatus = true
+                btn[54].classList.add('btn-active')
+                btn[42].classList.add('btn-active')
+            }
+            changeLang(langCurrent)
         }
     })
 }
@@ -236,20 +264,16 @@ document.addEventListener('keydown', function (e) {
             textareaKeyboard.focus()
             if (btnLetterList.split(',').includes(i.toString())) {
                 if (
-                    e.key.toLowerCase() !== btn[i].textContent &&
-                    e.key !== 'ArrowUp' &&
-                    e.key !== 'ArrowDown' &&
-                    e.key !== 'ArrowLeft' &&
-                    e.key !== 'ArrowRight'
+                    'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNMйцукенгшщзхъфывапролджэячсмитьбюЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ'.includes(
+                        e.key
+                    ) &&
+                    e.key !== btn[i].textContent.toLowerCase() &&
+                    e.key !== btn[i].textContent.toUpperCase()
                 ) {
                     changeLocalStorage()
                     changeLang(langCurrent)
                 }
-                if (langCurrent === 'rus') {
-                    textareaKeyboard.value += words[i][1]
-                } else if (langCurrent === 'eng') {
-                    textareaKeyboard.value += words[i][3] || words[i][1]
-                }
+                textareaKeyboard.value += btn[i].textContent
                 textareaKeyboard.focus()
             } else if (i === 41) {
                 textareaKeyboard.value += '\n'
@@ -264,16 +288,39 @@ document.addEventListener('keydown', function (e) {
                 textareaKeyboard.value += '\t'
             } else if (i === 28) {
                 textareaKeyboard.value = ''
+            } else if (i === 29) {
+                if (capsStatus) {
+                    capsStatus = false
+                    btn[29].classList.remove('btn-active')
+                } else {
+                    capsStatus = true
+                    btn[29].classList.add('btn-active')
+                }
+                changeLang(langCurrent)
+            } else if (i === 54 || i === 42) {
+                shiftStatus = true
+                btn[54].classList.add('btn-active')
+                btn[42].classList.add('btn-active')
+                changeLang(langCurrent)
             }
         }
     }
 })
 
 document.addEventListener('keyup', function (e) {
+    e.preventDefault()
     for (let i = 0; i < btn.length; i++) {
         if (words[i][0] === e.code) {
-            e.preventDefault()
-            btn[i].classList.remove('btn-pressed')
+            if (i !== 54 && i !== 42) {
+                btn[i].classList.remove('btn-pressed')
+            } else {
+                shiftStatus = false
+                btn[54].classList.remove('btn-active')
+                btn[54].classList.remove('btn-pressed')
+                btn[42].classList.remove('btn-active')
+                btn[42].classList.remove('btn-pressed')
+                changeLang(langCurrent)
+            }
         }
     }
 })
@@ -281,3 +328,38 @@ document.addEventListener('keyup', function (e) {
 textareaKeyboard.addEventListener('click', function () {
     textareaKeyboard.selectionStart = textareaKeyboard.value.length
 })
+
+function checkStatus() {
+    langCurrent
+    shiftStatus
+    capsStatus
+    if (langCurrent === 'rus') {
+        if (shiftStatus) {
+            if (capsStatus) {
+                return 6
+            } else {
+                return 2
+            }
+        } else {
+            if (capsStatus) {
+                return 5
+            } else {
+                return 1
+            }
+        }
+    } else {
+        if (shiftStatus) {
+            if (capsStatus) {
+                return 8
+            } else {
+                return 4
+            }
+        } else {
+            if (capsStatus) {
+                return 7
+            } else {
+                return 3
+            }
+        }
+    }
+}
